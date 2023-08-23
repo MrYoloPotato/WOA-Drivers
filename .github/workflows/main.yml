@@ -9,22 +9,16 @@ jobs:
     strategy:
       matrix:
         device:
-
           - enchilada
 
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-      - name: Extract certificate
-        shell: pwsh
-        env:
-          CERTIFICATE: ${{ secrets.CERTIFICATE }}
-        run: Set-Content -Path ..\drivers.pfx -Value ([Convert]::FromBase64String($env:CERTIFICATE)) -AsByteStream
+     
       - name: Package device ${{ matrix.device }}
         shell: pwsh
-        env:
-          PASSWORD: ${{ secrets.CERTIFICATE_PASSWORD }}
-        run: .\extract.ps1 -CodeName ${{ matrix.device }} -Certificate ..\drivers.pfx -Password $env:PASSWORD
+
+        run: .\extract.ps1 ${{ matrix.device }} 
       - name: Upload a Build Artifact
         uses: actions/upload-artifact@v3
         with:
